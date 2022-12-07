@@ -23,38 +23,35 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '3.6.3'
-
-      - name: Install pak and query dependencies
+        
+      - name: Install system dependencies
         run: |
-          install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
-          saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
-        shell: Rscript {0}
+          sudo apt update
+          sudo apt-get update 
+          sudo apt-get -y libcurl4-openssl-dev
+      #    sudo apt-get -y git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
+        #  sudo apt-get install -y curl
+
+      #- name: Install pak and query dependencies
+      #  run: |
+      #    install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+      #    saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+      #  shell: Rscript {0}
 
       
-      - name: Install dependencies
+      - name: Install pak dependencies
         run: |
           pak::local_install_dev_deps(upgrade = TRUE)
           pak::pkg_install("local::.")
-        shell: Rscript {0}
-        
-      #- name: Install system dependencies
-      #  run: |
-      #    sudo apt update
-      #    sudo apt-get update
-      #    sudo apt-get -y git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
-        #  sudo apt-get install -y curl
-         
+        shell: Rscript {0}   
       
-      #- name: curl
-      #  uses: wei/curl@master
-      #  with:
-      #    args: https://httpbin.org/get
-        
+           
+             
       - name: Install dependencies
         run: |
            Rscript -e "install.packages('remotes')" \
                    -e "remotes::install_cran('rcmdcheck')" \
-                   -e  "remotes::install_deps(dependencies = TRUE)" \
+                   -e  "remotes::install_deps(dependencies = TRUE)" 
          
                     
         
@@ -65,14 +62,7 @@ jobs:
       #    remotes::install_cran("rcmdcheck")
       #    shell: Rscript {0}
 
-      #- name: Install system dependencies
-      #  if: runner.os == 'Linux'
-      #  run: |
-      #    while read -r cmd
-      #    do
-      #     eval sudo $cmd
-      #   done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
+                
       - name: R CMD Build
         run: |
           R CMD build --no-build-vignettes --no-manual . 
@@ -80,13 +70,17 @@ jobs:
         shell: bash
           
       - name: search for tarball
-        run: find -L -name "*tar.gz"
+        run: |
+          find -L -name "*tar.gz"
+          ls -R
         shell: bash
         
-      - uses: actions/download-artifact@v3
+      - name: download artifact
+    # - working-directory: ./
+      - uses: actions/download-artifact@v3        
         with:
-         name: tarball
-         path: .
+         name: tarball1
+         path: ./tempconv_0.0.1.tar.gz
       
       - name: Check
         run : rcmdcheck::rcmdcheck("./tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
@@ -95,7 +89,7 @@ jobs:
         
       - uses: actions/upload-artifact@v3
         with:
-         name: tarball
+         name: tarball2
          path: ./tempconv_0.0.1.tar.gz
     
       #- name: Upload check results
