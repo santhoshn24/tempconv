@@ -28,19 +28,21 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get install -y curl
-       #   sudo apt-get git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
+          sudo apt-get -y git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
+        #  sudo apt-get install -y curl
+         
       
-      #- name: curl
-      #  uses: wei/curl@master
-      #  with:
-      #    args: https://httpbin.org/get
+      - name: curl
+        uses: wei/curl@master
+        with:
+          args: https://httpbin.org/get
         
       - name: Install dependencies
         run: |
            Rscript -e "install.packages('remotes')" \
-                   -e  "remotes::install_deps(dependencies = TRUE)" \
-                   -e "remotes::install_cran('rcmdcheck')" 
+                   -e "remotes::install_cran('rcmdcheck')" \
+                   -e  "remotes::install_deps(dependencies = TRUE)" 
+                    
         
       #- name: Install dependencies (not working)
       #  run: |
@@ -52,14 +54,24 @@ jobs:
       - name: R CMD Build
         run: |
           R CMD build --no-build-vignettes --no-manual . 
-          R CMD INSTALL *.tar.gz 
+        #  R CMD INSTALL *.tar.gz 
         shell: bash
           
-      - name: Check
-        run: rcmdcheck::rcmdcheck(path = ".", args = "--no-manual", error_on = "error")
-        shell: Rscript {0}
-
       - name: Upload check results
         uses: actions/upload-artifact@main
         with:
           name: rcmdcheck-results
+      
+      - name: Build R package
+        run: |
+          R CMD build ${{ github.event.repository.name }}
+          echo "PKGBUILD=$(echo *.tar.gz)" >> $GITHUB_ENV
+        shell: bash
+        
+      - name: Check R package
+        run: R CMD check --no-manual ${{ env.PKGBUILD }}
+        shell: bash
+        
+      - name: Check
+        run: rcmdcheck::rcmdcheck("tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
+        shell: Rscript {0}
