@@ -24,7 +24,14 @@ jobs:
         with:
           r-version: '3.6.3'
 
-      - name: Install dependencies (try1)
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt-get update
+          sudo apt-get curl
+       #   sudo apt-get git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
+          
+      - name: Install dependencies
         run: |
            Rscript -e "install.packages('remotes')" \
                    -e  "remotes::install_deps(dependencies = TRUE)" \
