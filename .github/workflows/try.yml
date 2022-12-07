@@ -95,7 +95,7 @@ jobs:
           Rscript -e future.tests::check --args --test-plan=${{ matrix.future.plan }}
 
       - name: Upload check results
-        if: failure()
+      #  if: always()
         uses: actions/upload-artifact@main
         with:
           name: ${{ runner.os }}-r${{ matrix.future.plan }}-results
