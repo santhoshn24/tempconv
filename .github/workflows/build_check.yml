@@ -24,14 +24,7 @@ jobs:
         with:
           r-version: '3.6.3'
 
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        run: |
-          while read -r cmd
-          do
-            eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
+                
       #- name: Install system dependencies
       #  run: |
       #    sudo apt update
@@ -59,31 +52,45 @@ jobs:
       #    remotes::install_cran("rcmdcheck")
       #    shell: Rscript {0}
 
+      #- name: Install system dependencies
+      #  if: runner.os == 'Linux'
+      #  run: |
+      #    while read -r cmd
+      #    do
+      #     eval sudo $cmd
+      #   done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          
       - name: R CMD Build
         run: |
           R CMD build --no-build-vignettes --no-manual . 
         #  R CMD INSTALL *.tar.gz 
         shell: bash
           
+      - name: Check
+        run : |
+          R CMD check *.tar.gz
+      #  run: rcmdcheck::rcmdcheck("tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
+        shell: bash
+        
       - name: Upload check results
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
+          name: tarball
+          path: |
+             /home/runner/work/_temp/Library
+             /home/runner/work/_temp/
       
-      - name: Build R package
-        run: |
-          R CMD build ${{ github.event.repository.name }}
-          echo "PKGBUILD=$(echo *.tar.gz)" >> $GITHUB_ENV
-        shell: bash
+      #- name: Build R package
+      #  run: |
+      #    R CMD build ${{ github.event.repository.name }}
+      #    echo "PKGBUILD=$(echo *.tar.gz)" >> $GITHUB_ENV
+      #  shell: bash
         
-      - name: Check
-        run: rcmdcheck::rcmdcheck("tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
-        shell: Rscript {0}
+      
         
-      - name: Check R package
-        run: R CMD check --no-manual ${{ env.PKGBUILD }}
-        shell: bash
+      #- name: Check R package
+      #  run: R CMD check --no-manual ${{ env.PKGBUILD }}
+      #  shell: bash
         
       
