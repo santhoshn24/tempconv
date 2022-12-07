@@ -1,0 +1,16 @@
+Package: tempconv
+Type: Package
+Title: Temperature conversion between Celsius and Fahrenheit 
+Version: 0.0.1
+Author: Santhosh
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Temperature conversion between Celsius and Fahrenheit
+    Temperature conversion between Fahrenheit and Celsius.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

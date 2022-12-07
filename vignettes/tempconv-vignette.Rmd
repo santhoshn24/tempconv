@@ -1,0 +1,21 @@
+---
+title: "tempconv-vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{tempconv-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempconv)
+C_to_F(99)
+F_to_C(99)
+```
