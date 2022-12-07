@@ -26,8 +26,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
-          remotes::install_deps(dependencies = TRUE)
+          install.packages('remotes')
+          remotes::install_deps(dependencies = TRUE, INSTALL_opts=c("--no-multiarch"))
+          remotes::install_cran("rcmdcheck")
           shell: Rscript {0}
 
       - name: R CMD Build
