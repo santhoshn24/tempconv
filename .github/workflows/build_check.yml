@@ -24,7 +24,13 @@ jobs:
         with:
           r-version: '3.6.3'
 
-      - name: Install dependencies
+      - name: Install dependencies (try1)
+        run: |
+           Rscript -e "install.packages('remotes')" \
+                   -e  "remotes::install_deps(dependencies = TRUE)" \
+                   -e "remotes::install_cran('rcmdcheck')" 
+        
+      - name: Install dependencies (not working)
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE, INSTALL_opts=c("--no-multiarch"))
