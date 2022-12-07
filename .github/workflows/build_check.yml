@@ -32,12 +32,6 @@ jobs:
       #    sudo apt-get -y git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
         #  sudo apt-get install -y curl
 
-      #- name: Install pak and query dependencies
-      #  run: |
-      #    install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
-      #    saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
-      #  shell: Rscript {0}
-
       
       - name: Install pak dependencies
         run: |
@@ -53,16 +47,7 @@ jobs:
                    -e "remotes::install_cran('rcmdcheck')" \
                    -e  "remotes::install_deps(dependencies = TRUE)" 
          
-                    
-        
-      #- name: Install dependencies (not working)
-      #  run: |
-      #   install.packages("remotes")
-      #    remotes::install_deps(dependencies = TRUE, INSTALL_opts=c("--no-multiarch"))
-      #    remotes::install_cran("rcmdcheck")
-      #    shell: Rscript {0}
-
-                
+                     
       - name: R CMD Build
         run: |
           R CMD build --no-build-vignettes --no-manual . 
@@ -76,7 +61,6 @@ jobs:
         shell: bash
         
       - name: download artifact
-    # - working-directory: ./
       - uses: actions/download-artifact@v3        
         with:
          name: tarball1
@@ -86,12 +70,28 @@ jobs:
         run : rcmdcheck::rcmdcheck("./tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
       #    R CMD check *.tar.gz           
         shell: Rscript {0}
-        
+      
+      - name: upload
       - uses: actions/upload-artifact@v3
         with:
          name: tarball2
          path: ./tempconv_0.0.1.tar.gz
     
+                     
+        
+      #- name: Install dependencies (not working)
+      #  run: |
+      #   install.packages("remotes")
+      #    remotes::install_deps(dependencies = TRUE, INSTALL_opts=c("--no-multiarch"))
+      #    remotes::install_cran("rcmdcheck")
+      #    shell: Rscript {0}
+      
+      #- name: Install pak and query dependencies
+      #  run: |
+      #    install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+      #    saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+      #  shell: Rscript {0}
+      
       #- name: Upload check results
       #  if: always()
       #  uses: actions/upload-artifact@main
