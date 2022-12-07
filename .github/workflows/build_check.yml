@@ -28,9 +28,14 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get curl
+          sudo apt-get install -y curl
        #   sudo apt-get git libnlopt-dev libjpeg-dev libssh-dev libcurl4-openssl-dev libxml2-dev libcairo2-dev curl tree texinfo pandoc
-          
+      
+      #- name: curl
+      #  uses: wei/curl@master
+      #  with:
+      #    args: https://httpbin.org/get
+        
       - name: Install dependencies
         run: |
            Rscript -e "install.packages('remotes')" \
