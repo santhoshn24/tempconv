@@ -24,7 +24,25 @@ jobs:
         with:
           r-version: '3.6.3'
 
-                
+      - name: Install pak and query dependencies
+        run: |
+          install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+          saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+        shell: Rscript {0}
+
+      
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          pak::local_system_requirements(execute = TRUE)
+        shell: Rscript {0}
+
+      - name: Install dependencies
+        run: |
+          pak::local_install_dev_deps(upgrade = TRUE)
+          pak::pkg_install("local::.")
+        shell: Rscript {0}
+        
       #- name: Install system dependencies
       #  run: |
       #    sudo apt update
@@ -33,16 +51,17 @@ jobs:
         #  sudo apt-get install -y curl
          
       
-      - name: curl
-        uses: wei/curl@master
-        with:
-          args: https://httpbin.org/get
+      #- name: curl
+      #  uses: wei/curl@master
+      #  with:
+      #    args: https://httpbin.org/get
         
       - name: Install dependencies
         run: |
            Rscript -e "install.packages('remotes')" \
                    -e "remotes::install_cran('rcmdcheck')" \
-                   -e  "remotes::install_deps(dependencies = TRUE)" 
+                   -e  "remotes::install_deps(dependencies = TRUE)" \
+         
                     
         
       #- name: Install dependencies (not working)
@@ -70,18 +89,28 @@ jobs:
         run: find -L -name "*tar.gz"
         shell: bash
         
+      - uses: actions/download-artifact@v3
+        with:
+         name: tarball
+         path: .
+      
       - name: Check
         run : rcmdcheck::rcmdcheck("./tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
       #    R CMD check *.tar.gz           
         shell: Rscript {0}
         
-      - name: Upload check results
-        if: always()
-        uses: actions/upload-artifact@main
+      - uses: actions/upload-artifact@v3
         with:
-          name: tarball
-          path: /home/runner/work/_temp/
-        #     /home/runner/work/_temp/Library
+         name: tarball
+         path: ./tempconv_0.0.1.tar.gz
+    
+      #- name: Upload check results
+      #  if: always()
+      #  uses: actions/upload-artifact@main
+      #  with:
+      #    name: tarball
+      #    path: /home/runner/work/_temp/
+      #       /home/runner/work/_temp/Library
               
       
       #- name: Build R package
