@@ -60,12 +60,12 @@ jobs:
           ls -R
         shell: bash
         
-      - name: download artifact
-      - uses: actions/download-artifact@v3        
-        with:
-         name: tarball1
-         path: ./tempconv_0.0.1.tar.gz
-      
+     # - name: download artifact
+     # - uses: actions/download-artifact@v3        
+     #   with:
+     #    name: tarball1
+     #    path: ./tempconv_0.0.1.tar.gz
+     # 
      #- name: Check
      #  run : rcmdcheck::rcmdcheck("./tempconv_0.0.1.tar.gz", args = "--no-manual", error_on = "error")
      ##    R CMD check *.tar.gz           
