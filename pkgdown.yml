@@ -1,0 +1,10 @@
+pandoc: 2.19.2
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  tempconv-vignette: tempconv-vignette.html
+last_built: 2022-12-08T11:01Z
+urls:
+  reference: https://santhoshn24.github.io/tempconv/reference
+  article: https://santhoshn24.github.io/tempconv/articles
+
