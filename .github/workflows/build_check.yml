@@ -63,7 +63,6 @@ jobs:
           ls -R
         shell: bash
         
-      - name: upload tarball
       - uses: actions/upload-artifact@v3
         with:
          name: tarball2
