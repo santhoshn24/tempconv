@@ -24,6 +24,12 @@ jobs:
         with:
           r-version: '3.6.3'
         
+      - name: Install pak and query dependencies
+        run: |
+          install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+          saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+        shell: Rscript {0}
+      
       - name: Install pak dependencies
         run: |
          pak::local_install_dev_deps(upgrade = TRUE)
@@ -87,11 +93,7 @@ jobs:
       #    remotes::install_cran("rcmdcheck")
       #    shell: Rscript {0}
       
-      #- name: Install pak and query dependencies
-      #  run: |
-      #    install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
-      #    saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
-      #  shell: Rscript {0}
+      
       
       #- name: Upload check results
       #  if: always()
